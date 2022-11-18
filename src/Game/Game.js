@@ -20,12 +20,8 @@ const Game = () => {
         const nextBoard = board.map((item, bIndex) => bIndex === index ? turn : item)
         setBoard(nextBoard)
 
-        if(nextBoard.filter(item => item === '').length === 0 ) {
-            alert('Remis')
-            setBoard(INITIAL_STATE.board)
-            return
-        }
-        else if(winCondition(nextBoard)) {
+        
+        if(winCondition(nextBoard)) {
             setScore(p => {
                 return {
                     ...p,
@@ -34,6 +30,11 @@ const Game = () => {
             })
             setBoard(INITIAL_STATE.board)
             alert(`Gierke wygral ${turn}`)
+            return
+        }
+        else if(nextBoard.filter(item => item === '').length === 0 ) {
+            alert('Remis')
+            setBoard(INITIAL_STATE.board)
             return
         }
         console.log(score);
