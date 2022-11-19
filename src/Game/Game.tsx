@@ -1,36 +1,43 @@
 import { ReactElement, useState } from 'react'
+import './Game.css'
 
 interface Score {
-  circle: number
-  cross: number
+  o: number
+  x: number
 }
 
 type Turn = keyof Score
 
+type History = Array<'remis' | 'o' | 'x'>
+
 interface State {
-  board: Array<'' | 'circle' | 'cross'>
+  board: Array<'' | 'o' | 'x'>
   turn: Turn
   score: Score
+  matchHistory: History
 }
 
 const INITIAL_STATE: State = {
   board: ['', '', '', '', '', '', '', '', ''],
   score: {
-    circle: 0,
-    cross: 0
+    o: 0,
+    x: 0
   },
-  turn: 'circle'
+  turn: 'o',
+  matchHistory: []
 }
+
+// const HISTORY_DEBUG: History = ['remis', 'remis', 'remis', 'remis', 'remis', 'remis', 'remis', 'remis', 'remis', 'remis', 'remis', 'remis', 'remis', 'remis', 'remis']
 
 const Game = (): ReactElement => {
   const [board, setBoard] = useState(INITIAL_STATE.board)
   const [score, setScore] = useState(INITIAL_STATE.score)
   const [turn, setTurn] = useState(INITIAL_STATE.turn)
+  const [matchHistory, setMatchHistory] = useState(INITIAL_STATE.matchHistory)
 
   const nextTurn = (index: number): number => {
     if (board[index] !== '') return 0
     const nextBoard = board.map((item, bIndex) => index === bIndex ? turn : item)
-    console.log(nextBoard)
     setBoard(nextBoard)
     if (winCondition(nextBoard)) {
       setBoard(INITIAL_STATE.board)
@@ -38,23 +45,29 @@ const Game = (): ReactElement => {
         ...p,
         [turn]: p[turn] + 1
       }))
+      alert(`Wygral ${turn}`)
+      setMatchHistory(p => ([...p, turn]))
     } else if (nextBoard.filter(item => item === '').length === 0) {
       alert('Remis')
+      setMatchHistory(p => ([...p, 'remis']))
       setBoard(INITIAL_STATE.board)
     }
-    setTurn(p => p === 'circle' ? 'cross' : 'circle')
+    setTurn(p => p === 'o' ? 'x' : 'o')
     return 0
   }
 
   return (
-        <div className='app'>
+        <div className='Game'>
             <div className='gridContainer'>
               { board.map((item, index) => <div className='gridCell' onClick={() => nextTurn(index)} key={index}>{item}</div>)}
             </div>
-            <div>
-            circle {score.circle} <br/>
-            cross {score.cross}
-        </div>
+            <div className='score'>
+              <span>circle: {score.o}</span>
+              <span>cross: {score.x}</span>
+            </div>
+            <div className='history'>
+              {matchHistory.map((match, index) => <div key={index}>{index + 1}: {match}</div>)}
+            </div>
         </div>
 
   )
