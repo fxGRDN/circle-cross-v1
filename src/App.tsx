@@ -1,11 +1,11 @@
-// import { useState } from 'react'
-
+import { ReactElement } from 'react'
 import './App.css'
+import Game from './Game/Game'
 
-function App () {
+function App (): ReactElement {
   return (
     <div className="App">
-      bruh
+      <Game/>
     </div>
   )
 }
